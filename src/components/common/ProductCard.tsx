@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Star, Zap, Eye, Download, Gift, ArrowRight, ShieldCheck, Flame, ExternalLink, Sparkles } from 'lucide-react';
 import { Product } from '../../types';
@@ -34,6 +34,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
     const remainingStock = 3 + (raw % 5); // 3 to 7
     return { viewers, sold, reviews, rating, remainingStock };
   }, [product.id, product.title]);
+
+  const [currentViewers, setCurrentViewers] = useState(socialMetrics.viewers);
+
+  useEffect(() => {
+    setCurrentViewers(socialMetrics.viewers);
+    const interval = setInterval(() => {
+      setCurrentViewers((prev) => {
+        const change = Math.random() > 0.45 ? 1 : -1;
+        return Math.max(12, Math.min(65, prev + change));
+      });
+    }, 6500 + ((socialMetrics.viewers % 7) * 800));
+    return () => clearInterval(interval);
+  }, [socialMetrics.viewers]);
 
   const handleOpenDetails = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -123,7 +136,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
           <div className="bg-slate-950/85 backdrop-blur-md text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-emerald-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-            <span className="text-white">{socialMetrics.viewers} জন</span> দেখছেন
+            <span className="text-white">{currentViewers} জন</span> দেখছেন
           </div>
           <div className="bg-slate-950/85 backdrop-blur-md text-amber-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-amber-500/30">
             <Flame className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />

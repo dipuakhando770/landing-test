@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useCart } from '../../context/CartContext';
+import { useLiveActivity } from '../../context/LiveActivityContext';
 import { sanitizeWhatsAppNumber } from '../../utils/formatters';
 import { BrandLogo } from './BrandLogo';
 
@@ -35,6 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { settings, categories, searchQuery, setSearchQuery, setSelectedCategory, selectedCategory } = useStore();
   const { cartCount, setIsCartOpen } = useCart();
+  const { liveViewers } = useLiveActivity();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
@@ -149,10 +151,20 @@ export const Header: React.FC<HeaderProps> = ({
         return (
           <div className="bg-[#070b14] text-slate-200 text-xs py-2 px-3 sm:px-4 border-b border-slate-800 relative overflow-hidden select-none">
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
-              {/* Left Badge */}
-              <div className="shrink-0 flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full shadow-sm z-10">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                <span>🔥 ঘোষণা</span>
+              {/* Left Badges */}
+              <div className="shrink-0 flex items-center gap-1.5 z-10">
+                <div className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span>🔥 ঘোষণা</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-white font-extrabold">{liveViewers} জন</span>
+                  <span className="hidden xs:inline text-emerald-400/90 font-medium">লাইভ</span>
+                </div>
               </div>
 
               {/* Center Moving Ticker with Left/Right Fades */}

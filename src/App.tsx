@@ -26,6 +26,7 @@ import { LiveSalesNotification } from './components/common/LiveSalesNotification
 import { MobileBottomBar } from './components/common/MobileBottomBar';
 import { PageLoader } from './components/common/PageLoader';
 import { SeoMetaManager } from './components/common/SeoMetaManager';
+import { LiveActivityProvider } from './context/LiveActivityContext';
 import { Product } from './types';
 import { findProductBySlugOrId, getProductPath, getProductSlug } from './utils/slugify';
 import { analytics } from './utils/analytics';
@@ -406,7 +407,9 @@ export default function App() {
     <AuthProvider>
       <StoreProvider>
         <CartProvider>
-          <MainApp />
+          <LiveActivityProvider>
+            <MainApp />
+          </LiveActivityProvider>
         </CartProvider>
       </StoreProvider>
     </AuthProvider>
