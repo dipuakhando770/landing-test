@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Star, Zap, Eye, Download, Gift, ArrowRight, ShieldCheck, Flame, ExternalLink, Sparkles } from 'lucide-react';
+import { Star, Zap, Eye, Download, Gift, ArrowRight, ShieldCheck, Flame, Users } from 'lucide-react';
 import { Product } from '../../types';
 import { formatPrice, calculateDiscount, triggerFreeProductDownload, normalizeImageUrl } from '../../utils/formatters';
 import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
-import { getProductSlug } from '../../utils/slugify';
 
 interface ProductCardProps {
   product: Product;
@@ -22,7 +21,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
   const isFreeProduct = Boolean(product.isFree);
   const discountPercent = calculateDiscount(product.price, product.oldPrice);
   const categoryName = getCategoryName(product.categoryId);
-  const productLandingPath = `/purchase/${getProductSlug(product)}`;
 
   // Deterministic Social Proof Metrics per product based on title/ID
   const socialMetrics = useMemo(() => {
@@ -57,19 +55,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
     }
   };
 
-  const handleGoToLanding = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.history.pushState(null, '', productLandingPath);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleOrderNow = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onOrderNow) {
       onOrderNow(product);
+    } else if (onOpenModal) {
+      onOpenModal(product);
     } else {
-      handleGoToLanding(e);
+      setSelectedProductForModal(product);
     }
   };
 
@@ -136,11 +129,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
           <div className="bg-slate-950/85 backdrop-blur-md text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-emerald-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-            <span className="text-white">{currentViewers} জন</span> দেখছেন
+            <span className="text-white">{currentViewers} জন</span> লাইভ দেখছেন
           </div>
           <div className="bg-slate-950/85 backdrop-blur-md text-amber-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm border border-amber-500/30">
             <Flame className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
-            <span>{socialMetrics.sold}+ সেল</span>
+            <span>৩,০০০+ গ্রাহক কিনেছেন</span>
           </div>
         </div>
       </div>
@@ -180,15 +173,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
             </span>
           </div>
 
-          {/* Urgency Alert on Card */}
+          {/* Digital Social Proof on Card (No Stock Limits) */}
           {!isFreeProduct && (
             <div className="flex items-center justify-between text-[10px] pt-1 text-slate-500">
-              <span className="flex items-center gap-1 text-rose-600 font-bold">
-                <Sparkles className="w-3 h-3 text-rose-500" />
-                <span>স্টক সীমিত: আর মাত্র {socialMetrics.remainingStock}টি বাকি</span>
+              <span className="flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                <Users className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span>৩,০০০+ মানুষ কিনেছেন ({socialMetrics.viewers * 18}+ জন ভিজিট করেছেন)</span>
               </span>
-              <span className="text-teal-600 font-bold bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">
-                ২৪/৭ সাপোর্ট
+              <span className="text-teal-700 font-bold bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">
+                লাইফটাইম
               </span>
             </div>
           )}
@@ -215,23 +208,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, 
             )}
           </div>
 
-          {/* Action Buttons: Primary Order Now + Secondary View Details / Direct Landing */}
+          {/* Action Buttons: Primary Order Now + Secondary View Details */}
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={handleGoToLanding}
-              className="w-full py-2 px-2 rounded-xl border border-emerald-300 hover:border-emerald-500 bg-emerald-50/60 hover:bg-emerald-100/80 text-emerald-800 text-[11px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap shadow-xs"
-              title="সম্পূর্ণ ল্যান্ডিং পেজ ও ভিডিও রিভিউ দেখুন"
+              onClick={handleOpenDetails}
+              className="w-full py-2 px-2.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>ল্যান্ডিং পেজ</span>
+              <Eye className="w-3.5 h-3.5 text-slate-500" />
+              <span>বিস্তারিত দেখুন</span>
             </button>
 
             {isFreeProduct ? (
               <button
                 type="button"
                 onClick={handleFreeDownload}
-                className="w-full py-2 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
+                className="w-full py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>{isDownloaded ? 'ডাউনলোড হচ্ছে' : 'ফ্রি ডাউনলোড'}</span>

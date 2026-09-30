@@ -94,8 +94,8 @@ export const StickyOrderBar: React.FC<StickyOrderBarProps> = ({ product }) => {
                 <ShieldCheck className="w-3 h-3" />
                 <span>ইনস্ট্যান্ট অটো ডেলিভারি</span>
               </span>
-              <span className="hidden lg:inline text-amber-300 font-bold bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">
-                ⚡ স্টক মাত্র ৩টি বাকি!
+              <span className="hidden lg:inline text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                🔥 ৩,০০০+ গ্রাহক কিনেছেন • আজীবন অ্যাক্সেস
               </span>
             </div>
           </div>

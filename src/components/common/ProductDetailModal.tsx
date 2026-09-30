@@ -28,7 +28,7 @@ import {
 import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import { analytics } from '../../utils/analytics';
-import { getProductSlug } from '../../utils/slugify';
+import { getProductPath } from '../../utils/slugify';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -69,7 +69,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const currentImage = activeImage || product.imageUrl;
   const discountPercent = calculateDiscount(product.price, product.oldPrice);
   const categoryName = getCategoryName(product.categoryId);
-  const productLandingPath = `/purchase/${getProductSlug(product)}`;
+  const productPath = getProductPath(product);
   const hasLivePreview = Boolean(
     product.livePreviewEnabled && product.livePreviewUrl && product.livePreviewUrl.trim()
   );
@@ -103,7 +103,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const handleGoToFullPage = () => {
     onClose();
-    window.history.pushState(null, '', productLandingPath);
+    window.history.pushState(null, '', productPath);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (onViewFullPage) {
@@ -291,32 +291,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </div>
                 </div>
 
-                {/* Urgency Alert */}
-                <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-500/10 border border-rose-500/25 px-3 py-2 rounded-xl">
-                  <Flame className="w-4 h-4 text-rose-400 shrink-0 fill-rose-500 animate-pulse" />
+                {/* Digital Adoption & Proof Alert */}
+                <div className="flex items-center gap-2 text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 rounded-xl">
+                  <Flame className="w-4 h-4 text-emerald-400 shrink-0 fill-emerald-500 animate-pulse" />
                   <span>
                     {isFreeProduct ? (
                       <>
-                        সম্পূর্ণ ফ্রি প্রোডাক্ট! কোনো পেমেন্ট ছাড়াই <strong className="text-rose-200 font-bold">সরাসরি ডাউনলোড</strong> করুন
+                        সম্পূর্ণ ফ্রি ডিজিটাল প্রোডাক্ট! কোনো পেমেন্ট ছাড়াই <strong className="text-emerald-200 font-bold">সরাসরি ডাউনলোড</strong> করুন
                       </>
                     ) : (
                       <>
-                        অফার সীমিত! আর মাত্র <strong className="text-rose-200 font-bold">{cartCount}টি স্লট</strong> অবশিষ্ট আছে!
+                        <strong className="text-white font-extrabold">৩,০০০+ গ্রাহক</strong> এই ডিজিটাল প্রোডাক্টটি কিনেছেন এবং <strong className="text-amber-300 font-bold">৪.৯★ রেটিং</strong> দিয়েছেন!
                       </>
                     )}
                   </span>
                 </div>
-
-                {/* Direct Landing Page CTA Button */}
-                <button
-                  type="button"
-                  onClick={handleGoToFullPage}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer group"
-                >
-                  <ExternalLink className="w-4 h-4 text-emerald-200 group-hover:scale-110 transition-transform" />
-                  <span>🚀 এই প্রোডাক্টের অফিশিয়াল ল্যান্ডিং পেজ ও ভিডিও রিভিউ দেখুন</span>
-                </button>
-
 
                 {/* Key Bullet Points */}
                 <div className="space-y-1.5 text-xs text-slate-200 pt-1">

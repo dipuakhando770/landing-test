@@ -155,7 +155,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 className="flex-1 sm:flex-none px-4 sm:px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30 hover:shadow-emerald-600/40 cursor-pointer whitespace-nowrap"
               >
                 <Flame className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
-                <span>🔥 মেগা অফার ল্যান্ডিং</span>
+                <span>🔥 আজকের স্পেশাল অফার</span>
               </button>
             </div>
           </div>
@@ -278,7 +278,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                 key={product.id}
                 product={product}
                 onOpenModal={onSelectProduct}
-                onOrderNow={handleNavigateToProductPurchase}
               />
             ))}
           </div>
@@ -414,7 +413,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                     key={product.id}
                     product={product}
                     onOpenModal={onSelectProduct}
-                    onOrderNow={handleNavigateToProductPurchase}
                   />
                 ))}
               </div>
@@ -596,7 +594,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={() => handleNavigateToProductPurchase(featuredOfferProduct)}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
-              <span>অফিশিয়াল ল্যান্ডিং পেজ দেখুন</span>
+              <span>অফারটি এখনই নিন</span>
               <ExternalLink className="w-4 h-4" />
             </button>
           </div>
