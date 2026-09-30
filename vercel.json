@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/create-payment", "destination": "/api/payment/create" },
+    { "source": "/api/verify-payment", "destination": "/api/payment/verify" },
+    { "source": "/api/payment-config-status", "destination": "/api/public-landing-config?route=payment-config-status" },
+    { "source": "/api/public-pixel-config", "destination": "/api/public-landing-config?route=public-pixel-config" },
+    { "source": "/api/track-visit", "destination": "/api/public-landing-config?route=track-visit" },
+    { "source": "/api/admin/(.*)", "destination": "/api/admin?endpoint=$1" },
+    { "source": "/api/admin", "destination": "/api/admin" },
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
