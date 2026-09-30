@@ -4,7 +4,7 @@ import { CheckCircle2, Zap, X, Star, Flame, Eye, MessageCircle, Users } from 'lu
 import { useStore } from '../../context/StoreContext';
 import { useLiveActivity } from '../../context/LiveActivityContext';
 import { Product } from '../../types';
-import { getProductSlug } from '../../utils/slugify';
+import { getProductPath, getProductSlug } from '../../utils/slugify';
 
 interface NotificationItem {
   type: 'order' | 'review' | 'viewer' | 'chat';
@@ -52,7 +52,7 @@ const chatTopics = [
 const times = ['এইমাত্র', '১ মিনিট আগে', '২ মিনিট আগে', '৩ মিনিট আগে', '৪ মিনিট আগে'];
 
 export const LiveSalesNotification: React.FC = () => {
-  const { products } = useStore();
+  const { products, settings } = useStore();
   const { liveViewers, newJoiners } = useLiveActivity();
   const [notification, setNotification] = useState<NotificationItem | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -133,8 +133,10 @@ export const LiveSalesNotification: React.FC = () => {
 
   const handleClick = () => {
     if (!notification.product) return;
-    const landingPath = `/purchase/${getProductSlug(notification.product)}`;
-    window.history.pushState(null, '', landingPath);
+    const targetPath = settings.landingPagesEnabled
+      ? `/purchase/${getProductSlug(notification.product)}`
+      : getProductPath(notification.product);
+    window.history.pushState(null, '', targetPath);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setIsVisible(false);

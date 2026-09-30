@@ -48,7 +48,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { Order, Product } from '../types';
-import { subscribeToOrders, updateOrderStatus } from '../firebase/services';
+import { subscribeToOrders, updateOrderStatus, updateStoreSettings } from '../firebase/services';
 import { formatPrice, formatDate } from '../utils/formatters';
 import { getProductSlug } from '../utils/slugify';
 
@@ -182,7 +182,7 @@ const defaultLandingPage: LandingPageData = {
 };
 
 export const LandingPagesManager: React.FC = () => {
-  const { products: storeProducts, getCategoryName } = useStore();
+  const { products: storeProducts, getCategoryName, settings } = useStore();
   
   // 10 Sub-tabs navigation matching prompt specification
   const [activeTab, setActiveTab] = useState<
@@ -530,6 +530,75 @@ export const LandingPagesManager: React.FC = () => {
             >
               <Plus className="w-4 h-4" />
               <span>নতুন ল্যান্ডিং পেজ বানান</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Master Landing Page vs Direct Product Mode Control Bar (1-Click Switch) */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border ${
+              settings.landingPagesEnabled
+                ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
+                : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+            }`}>
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-white">
+                  ফেসবুক অ্যাড ট্রাফিক ও ল্যান্ডিং পেজ মোড:
+                </h3>
+                <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                  settings.landingPagesEnabled
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 animate-pulse'
+                }`}>
+                  {settings.landingPagesEnabled
+                    ? '🔵 পূর্ণাঙ্গ ল্যান্ডিং পেজ ফানেল চালু'
+                    : '🟢 সরাসরি ক্লিন প্রোডাক্ট পেজ (রিকমেন্ডেড)'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {settings.landingPagesEnabled
+                  ? 'ফেসবুক অ্যাডের লিংকে ভিজিট করলে পূর্ণাঙ্গ ভিডিও ও সেলস ল্যান্ডিং ফানেল লোড হচ্ছে।'
+                  : 'ফেসবুক অ্যাডের পুরাতন লিংক (`/purchase/...`) থেকে আসা ক্রেতারা সরাসরি ফাস্ট প্রোডাক্ট পেজে অর্ডার করতে পারছে।'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+            <button
+              type="button"
+              onClick={async () => {
+                const nextState = !settings.landingPagesEnabled;
+                try {
+                  await updateStoreSettings({
+                    ...settings,
+                    landingPagesEnabled: nextState
+                  });
+                  setSuccessMsg(
+                    nextState
+                      ? 'পূর্ণাঙ্গ ল্যান্ডিং পেজ ফানেল মোড চালু করা হয়েছে!'
+                      : 'সরাসরি প্রোডাক্ট পেজ মোড চালু করা হয়েছে (ফেসবুক অ্যাড ট্রাফিক সরাসরি প্রোডাক্টে যাবে)!'
+                  );
+                  setTimeout(() => setSuccessMsg(null), 4000);
+                } catch (e: any) {
+                  alert('Error updating setting: ' + e.message);
+                }
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shadow-md flex items-center gap-2 ${
+                settings.landingPagesEnabled
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  : 'bg-cyan-600 hover:bg-cyan-500 text-white'
+              }`}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>
+                {settings.landingPagesEnabled
+                  ? 'সরাসরি প্রোডাক্ট মোডে পরিবর্তন করুন (OFF)'
+                  : 'পূর্ণাঙ্গ ল্যান্ডিং মোডে পরিবর্তন করুন (ON)'}
+              </span>
             </button>
           </div>
         </div>

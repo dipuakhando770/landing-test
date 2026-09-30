@@ -32,6 +32,7 @@ export const defaultStoreSettings: StoreSettings = {
   ogImageUrl: '',
   hideHeaderTitle: true,
   whatsappNumber: '01962780922',
+  landingPagesEnabled: false,
   deliveryCharge: 0,
   paybd: {
     enabled: true,

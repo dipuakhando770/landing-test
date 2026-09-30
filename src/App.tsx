@@ -109,7 +109,7 @@ function MainApp() {
   });
   const [minReloadTimeElapsed, setMinReloadTimeElapsed] = useState(false);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
-  const { products, loading: storeLoading, setSelectedCategory } = useStore();
+  const { products, loading: storeLoading, settings, setSelectedCategory } = useStore();
   const { selectedProductForModal, setSelectedProductForModal } = useCart();
 
   useEffect(() => {
@@ -121,7 +121,7 @@ function MainApp() {
 
   const showPageLoader = storeLoading && !minReloadTimeElapsed;
 
-  // Sync products for Landing and Product Views whenever products change
+  // Sync products for Landing and Product Views whenever products or landing settings change
   useEffect(() => {
     if (products.length === 0) return;
 
@@ -132,14 +132,13 @@ function MainApp() {
         matched = findProductBySlugOrId(products, landingSlug);
       }
       const finalProduct = matched || products.find((p) => p.featured) || products[0];
-      setLandingProduct(finalProduct);
 
-      // Clean up legacy or invalid /purchase/purchase URL from browser history
-      if (typeof window !== 'undefined') {
-        const path = window.location.pathname || '';
-        if (path === '/purchase/purchase' || path === '/purchase/' || path === '/landing/purchase' || path === '/landing/landing') {
-          window.history.replaceState(null, '', `/purchase/${getProductSlug(finalProduct)}`);
-        }
+      if (settings.landingPagesEnabled) {
+        setLandingProduct(finalProduct);
+        setCurrentView('landing');
+      } else {
+        setActiveProduct(finalProduct);
+        setCurrentView('product');
       }
     } else if (currentView === 'product') {
       const path = window.location.pathname || '';
@@ -151,7 +150,7 @@ function MainApp() {
         }
       }
     }
-  }, [products, currentView]);
+  }, [products, settings.landingPagesEnabled]);
 
   // Track page visits in analytics
   useEffect(() => {
@@ -199,12 +198,15 @@ function MainApp() {
             matched = findProductBySlugOrId(products, landingSlug);
           }
           const target = matched || products.find((p) => p.featured) || products[0];
-          setLandingProduct(target);
-          if (path === '/purchase/purchase' || path === '/landing/purchase' || path === '/landing/landing') {
-            window.history.replaceState(null, '', `/purchase/${getProductSlug(target)}`);
+          
+          if (settings.landingPagesEnabled) {
+            setLandingProduct(target);
+            setCurrentView('landing');
+          } else {
+            setActiveProduct(target);
+            setCurrentView('product');
           }
         }
-        setCurrentView('landing');
         return;
       }
 
@@ -252,7 +254,7 @@ function MainApp() {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
     };
-  }, [products]);
+  }, [products, settings.landingPagesEnabled]);
 
   const handleOpenProduct = (product: Product) => {
     setActiveProduct(product);
@@ -283,13 +285,21 @@ function MainApp() {
   };
 
   const handleNavigateToLanding = (product?: Product) => {
-    if (product) {
-      setLandingProduct(product);
-      window.history.pushState(null, '', `/purchase/${product.slug}`);
+    if (settings.landingPagesEnabled) {
+      if (product) {
+        setLandingProduct(product);
+        window.history.pushState(null, '', `/purchase/${product.slug}`);
+      } else {
+        window.history.pushState(null, '', '/purchase');
+      }
+      setCurrentView('landing');
     } else {
-      window.history.pushState(null, '', '/purchase');
+      if (product) {
+        handleOpenProduct(product);
+      } else {
+        handleNavigateToShop();
+      }
     }
-    setCurrentView('landing');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -330,7 +340,7 @@ function MainApp() {
   }
 
   // Dedicated Render for Landing Page (/purchase or /purchase/:slug)
-  if (currentView === 'landing') {
+  if (currentView === 'landing' && settings.landingPagesEnabled) {
     return (
       <>
         <SeoMetaManager currentView="landing" activeProduct={landingProduct} />
@@ -391,7 +401,7 @@ function MainApp() {
           <FloatingWhatsApp />
           <LiveSalesNotification />
           <MobileBottomBar
-            currentView={currentView === 'product' ? 'shop' : currentView}
+            currentView={currentView === 'product' || currentView === 'landing' ? 'shop' : (currentView as any)}
             setCurrentView={setCurrentView}
             onOpenOrderHistory={() => setIsOrderHistoryOpen(true)}
           />

@@ -83,6 +83,7 @@ export interface StoreSettings {
   ogImageUrl?: string;
   hideHeaderTitle?: boolean;
   whatsappNumber: string;
+  landingPagesEnabled?: boolean;
   deliveryCharge?: number;
   paybd?: PayBdGatewaySettings;
   smtp?: EmailSmtpSettings;

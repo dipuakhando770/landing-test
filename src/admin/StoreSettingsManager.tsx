@@ -77,6 +77,9 @@ export const StoreSettingsManager: React.FC = () => {
 
   // Contact & Announcement States
   const [whatsappNumber, setWhatsappNumber] = useState(settings.whatsappNumber || '01962780922');
+  const [landingPagesEnabled, setLandingPagesEnabled] = useState<boolean>(
+    settings.landingPagesEnabled ?? false
+  );
   const [deliveryCharge, setDeliveryCharge] = useState<number>(settings.deliveryCharge || 0);
   const [announcementEnabled, setAnnouncementEnabled] = useState(
     settings.announcement?.enabled ?? true
@@ -166,6 +169,7 @@ export const StoreSettingsManager: React.FC = () => {
     setMetaKeywords(settings.metaKeywords || RECOMMENDED_SEO_KEYWORDS.join(', '));
     setOgImageUrl(settings.ogImageUrl || '');
     setWhatsappNumber(settings.whatsappNumber || '01962780922');
+    setLandingPagesEnabled(settings.landingPagesEnabled ?? false);
     setDeliveryCharge(settings.deliveryCharge || 0);
     setAnnouncementEnabled(settings.announcement?.enabled ?? true);
     setAnnouncementText(
@@ -317,6 +321,7 @@ export const StoreSettingsManager: React.FC = () => {
         ogImageUrl: ogImageUrl.trim(),
         hideHeaderTitle: Boolean(hideHeaderTitle),
         whatsappNumber: cleanPhone.slice(0, 50),
+        landingPagesEnabled: Boolean(landingPagesEnabled),
         deliveryCharge: numDelivery,
         logoUrl: logoUrl.trim(),
         loadingLogoUrl: loadingLogoUrl.trim(),
@@ -381,6 +386,23 @@ export const StoreSettingsManager: React.FC = () => {
       setTimeout(() => setSavedSuccess(false), 3000);
     } catch (err) {
       console.error('Auto save logo error:', err);
+    }
+  };
+
+  const handleInstantLandingToggle = async (enabled: boolean) => {
+    setLandingPagesEnabled(enabled);
+    setFormError(null);
+    try {
+      await updateStoreSettings({
+        ...settings,
+        websiteName: websiteName.trim() || settings.websiteName || 'Nasir Digital Hub',
+        whatsappNumber: whatsappNumber.trim() || settings.whatsappNumber || '01962780922',
+        landingPagesEnabled: Boolean(enabled),
+      });
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    } catch (err) {
+      console.error('Auto save landing page mode error:', err);
     }
   };
 
@@ -579,12 +601,137 @@ export const StoreSettingsManager: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. Google Ranking SEO, Meta Tags & Social Link Share Preview Section */}
+        {/* 2. Facebook Ads & Landing Page Funnel Mode Control (Customer Requested Feature) */}
+        <div className="pt-6 border-t border-slate-800 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <Globe className="w-4 h-4" /> ২. ফেসবুক অ্যাড ও ল্যান্ডিং পেজ মোড কন্ট্রোল (Landing Page Funnel vs Direct Product View)
+              </h3>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                ফেসবুক অ্যাড বা পুরাতন লিংক (`/purchase/...` বা `/landing/...`) থেকে আসা ক্রেতাদের সরাসরি প্রোডাক্ট পেজ বা পূর্ণাঙ্গ ল্যান্ডিং ফানেল দেখানোর কন্ট্রোল
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-xs font-extrabold px-3 py-1 rounded-full border ${
+                  landingPagesEnabled
+                    ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30'
+                    : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 animate-pulse'
+                }`}
+              >
+                {landingPagesEnabled
+                  ? '🔵 পূর্ণাঙ্গ ল্যান্ডিং ফানেল সক্রিয়'
+                  : '🟢 সরাসরি প্রোডাক্ট পেজ সক্রিয় (রিকমেন্ডেড)'}
+              </span>
+            </div>
+          </div>
+
+          {/* Mode Switcher Banner */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Option A: Direct Product Page (Default Recommended) */}
+            <div
+              onClick={() => handleInstantLandingToggle(false)}
+              className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+                !landingPagesEnabled
+                  ? 'bg-emerald-950/30 border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/50'
+                  : 'bg-slate-950/70 border-slate-800 hover:border-slate-700 opacity-75 hover:opacity-100'
+              }`}
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" /> মোড ১: সরাসরি প্রোডাক্ট পেজ (সুপার ফাস্ট অর্ডার)
+                  </span>
+                  <span className="text-[10px] font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">
+                    বেশি সেলস এর জন্য সেরা
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  পুরাতন ফেসবুক অ্যাড লিংক না ভেঙেই সরাসরি দ্রুত প্রোডাক্টে নিয়ে যাবে
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  ফেসবুক বিজ্ঞাপনে রান করা পুরাতন লিংক (`/purchase/:slug`, `/landing/:slug`, `/combo-pack` ইত্যাদি) থেকে ক্রেতা আসলে বড় ফানেলে আটকে না রেখে সরাসরি পরিচ্ছন্ন <strong>প্রোডাক্ট পেজ</strong> দেখাবে। ফলে কাস্টমার কোনো ড্রপ-অফ ছাড়া <strong>১-ক্লিকে bKash/Nagad পেমেন্ট</strong> ও অর্ডার করতে পারবে।
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-mono text-[11px]">
+                  /purchase/bundle ➔ <strong className="text-emerald-400 font-sans">সরাসরি প্রোডাক্ট</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleInstantLandingToggle(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    !landingPagesEnabled
+                      ? 'bg-emerald-600 text-white shadow-md cursor-default'
+                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                  }`}
+                >
+                  {!landingPagesEnabled ? '✓ বর্তমানে সিলেক্টেড' : 'সরাসরি প্রোডাক্ট মোড করুন'}
+                </button>
+              </div>
+            </div>
+
+            {/* Option B: Full Landing Page Funnel */}
+            <div
+              onClick={() => handleInstantLandingToggle(true)}
+              className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+                landingPagesEnabled
+                  ? 'bg-cyan-950/30 border-cyan-500 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
+                  : 'bg-slate-950/70 border-slate-800 hover:border-slate-700 opacity-75 hover:opacity-100'
+              }`}
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4" /> মোড ২: পূর্ণাঙ্গ ল্যান্ডিং পেজ ফানেল
+                  </span>
+                  <span className="text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-md">
+                    ভিডিও ও বিস্তারিত বিবরণ
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  ভিডিও ওভারভিউ, কারিকুলাম, সোশ্যাল প্রুফ সহ বড় ল্যান্ডিং পেজ
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  ফেসবুক অ্যাডের লিংকে ভিজিট করলে বড় আকারের সেলস ল্যান্ডিং পেজ, ভিডিও স্ক্রিনশট, বান্ডেল মডিউল, এফএকিউ এবং বিশেষ অফার টাইমার সমৃদ্ধ লম্বা ফানেল পেজটি লোড হবে।
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-mono text-[11px]">
+                  /purchase/bundle ➔ <strong className="text-cyan-400 font-sans">ল্যান্ডিং ফানেল</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleInstantLandingToggle(true);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    landingPagesEnabled
+                      ? 'bg-cyan-600 text-white shadow-md cursor-default'
+                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                  }`}
+                >
+                  {landingPagesEnabled ? '✓ বর্তমানে সিলেক্টেড' : 'ল্যান্ডিং পেজ মোড করুন'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Google Ranking SEO, Meta Tags & Social Link Share Preview Section */}
         <div className="pt-6 border-t border-slate-800 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                <Search className="w-4 h-4" /> ২. গুগল র‍্যাংকিং এসইও (SEO), মেটা ট্যাগ ও ডেসক্রিপশন
+                <Search className="w-4 h-4" /> ৩. গুগল র‍্যাংকিং এসইও (SEO), মেটা ট্যাগ ও ডেসক্রিপশন
               </h3>
               <p className="text-[11px] text-slate-400 mt-0.5">
                 গুগল সার্চে সাইট র‍্যাংক করার জন্য এবং হোয়াটসঅ্যাপ/ফেসবুকে লিংক শেয়ার করলে যে টাইটেল ও ডেসক্রিপশন দেখাবে
