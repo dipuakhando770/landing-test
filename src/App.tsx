@@ -90,7 +90,23 @@ function MainApp() {
   });
 
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-  const [landingProduct, setLandingProduct] = useState<Product | null>(null);
+  const [landingProduct, setLandingProduct] = useState<Product | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('ndh_cache_products');
+        if (cached) {
+          const list: Product[] = JSON.parse(cached);
+          const landingSlug = extractLandingSlug();
+          if (landingSlug) {
+            const matched = findProductBySlugOrId(list, landingSlug);
+            if (matched) return matched;
+          }
+          return list.find((p) => p.featured) || list[0] || null;
+        }
+      } catch {}
+    }
+    return null;
+  });
   const [minReloadTimeElapsed, setMinReloadTimeElapsed] = useState(false);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const { products, loading: storeLoading, setSelectedCategory } = useStore();

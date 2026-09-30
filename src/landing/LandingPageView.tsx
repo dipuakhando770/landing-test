@@ -20,6 +20,8 @@ import { FaqSection } from './FaqSection';
 import { Footer } from './Footer';
 import { StickyOrderBar } from './StickyOrderBar';
 import { GatewaySettingsModal } from './GatewaySettingsModal';
+import { LiveSalesNotification } from '../components/common/LiveSalesNotification';
+import { FloatingWhatsApp } from '../components/common/FloatingWhatsApp';
 import { Product } from '../types';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 
@@ -29,36 +31,32 @@ interface LandingPageViewProps {
   onOpenAdmin?: () => void;
 }
 
+const defaultLandingProduct: Product = {
+  id: 'combo-299',
+  title: '1TB+ Mega All-In-One Digital Bundle',
+  slug: 'bundle',
+  price: 299,
+  oldPrice: 2499,
+  description: 'নিজের Digital Product তৈরি করুন, সেটআপ করুন এবং অটো সেল শুরু করুন — ১০০TB ডিজিটাল প্রোডাক্ট বান্ডেল সহ মাত্র ২৯৯ টাকায়!',
+  shortDescription: 'সম্পূর্ণ অটোমেটেড ডিজিটাল প্রোডাক্ট বিজনেস ও ১০০TB ক্লাউড ড্রাইভ রিসোর্স। লাইফটাইম অ্যাক্সেস ও ২৪/৭ ভিআইপি সাপোর্ট সহ।',
+  imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+  available: true,
+  featured: true,
+  rating: 5.0,
+  reviewCount: 340,
+  type: 'digital',
+  categoryId: 'all-in-one',
+  downloadUrl: 'https://drive.google.com',
+  createdAt: Date.now()
+};
+
 export const LandingPageView: React.FC<LandingPageViewProps> = ({ product, onBackToStore, onOpenAdmin }) => {
   const [isGatewayModalOpen, setIsGatewayModalOpen] = useState(false);
+  const activeProduct = product || defaultLandingProduct;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [product?.id]);
-
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center font-['Hind_Siliguri',sans-serif]">
-        <div className="max-w-md space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl">
-            <ShoppingBag className="w-8 h-8" />
-          </div>
-          <h2 className="text-2xl font-black text-white">প্রোডাক্টটি খুঁজে পাওয়া যায়নি</h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            অনুগ্রহ করে স্টোর থেকে আপনার কাঙ্ক্ষিত প্রোডাক্ট বেছে নিন এবং তার ডেডিকেটেড ল্যান্ডিং পেজে যান।
-          </p>
-          <button
-            type="button"
-            onClick={onBackToStore}
-            className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 mx-auto cursor-pointer transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>সকল প্রোডাক্ট দেখুন</span>
-          </button>
-        </div>
-      </div>
-    );
-  }
+  }, [activeProduct.id]);
 
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-emerald-500 selection:text-white font-['Hind_Siliguri',sans-serif]">
@@ -71,7 +69,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ product, onBac
       {/* Main High-Conversion Sections with full video sources, proofs, and product details */}
       <main>
         {/* 1. Dynamic Product Hero */}
-        <HeroSection product={product} />
+        <HeroSection product={activeProduct} />
 
         {/* 2. Main System Video Walkthrough */}
         <VideoOverview />
@@ -83,7 +81,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ product, onBac
         <RealtimeProofSection />
 
         {/* 5. Student & Customer Video Reviews */}
-        <StudentReviewsSection product={product} />
+        <StudentReviewsSection product={activeProduct} />
 
         {/* 6. VIP Community Proof */}
         <CommunityProofSection />
@@ -92,7 +90,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ product, onBac
         <InfinityBundleSection />
 
         {/* 8. Specific Product Ecosystem & Features */}
-        <ProductEcosystemSection product={product} />
+        <ProductEcosystemSection product={activeProduct} />
 
         {/* 9. Real Google Drive Folder Screenshots */}
         <DriveScreenshotsSection />
@@ -104,29 +102,33 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ product, onBac
         <CurriculumSection />
 
         {/* 12. Problem vs Solution */}
-        <WhyAndSolutionSection product={product} />
+        <WhyAndSolutionSection product={activeProduct} />
 
         {/* 13. Mobile Flow & Video Guide */}
         <MobileFlowSection />
 
         {/* 14. Product Pricing Card & Countdown */}
-        <PricingSection product={product} />
+        <PricingSection product={activeProduct} />
 
         {/* 15. PayBD Checkout Form */}
-        <CheckoutForm product={product} />
+        <CheckoutForm product={activeProduct} />
 
         {/* 16. Mentor & 24/7 VIP Support */}
         <MentorAndSupportSection />
 
         {/* 17. Product FAQ */}
-        <FaqSection product={product} />
+        <FaqSection product={activeProduct} />
       </main>
 
       {/* Footer */}
       <Footer onOpenAdmin={onOpenAdmin} />
 
       {/* Sticky Bottom Direct Order Bar */}
-      <StickyOrderBar product={product} />
+      <StickyOrderBar product={activeProduct} />
+
+      {/* Conversion & Live Proof Widgets inside Landing Page */}
+      <LiveSalesNotification />
+      <FloatingWhatsApp />
 
       {/* Gateway Security Modal */}
       <GatewaySettingsModal
