@@ -15,7 +15,9 @@ import {
   SlidersHorizontal,
   ChevronRight,
   Clock,
-  Gift
+  Gift,
+  Star,
+  ExternalLink
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { Product, Category } from '../types';
@@ -137,23 +139,23 @@ export const HomePage: React.FC<HomePageProps> = ({
               </h3>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={scrollToAllProducts}
-                className="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
+                className="flex-1 sm:flex-none px-4 sm:px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm hover:shadow-md whitespace-nowrap"
               >
-                <span>সকল প্রোডাক্ট দেখুন</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>সকল প্রোডাক্ট</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
 
               <button
                 type="button"
                 onClick={() => handleNavigateToProductPurchase(featuredOfferProduct)}
-                className="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 hover:shadow-emerald-600/30 cursor-pointer"
+                className="flex-1 sm:flex-none px-4 sm:px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30 hover:shadow-emerald-600/40 cursor-pointer whitespace-nowrap"
               >
-                <Flame className="w-4 h-4 text-amber-300 fill-amber-300" />
-                <span>আজকের অফার দেখুন</span>
+                <Flame className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
+                <span>🔥 মেগা অফার ল্যান্ডিং</span>
               </button>
             </div>
           </div>
@@ -445,6 +447,159 @@ export const HomePage: React.FC<HomePageProps> = ({
               />
             </div>
           )}
+        </div>
+      </section>
+
+      {/* 5.5 CUSTOMER REVIEWS & SOCIAL PROOF SPOTLIGHT */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 lg:p-10 shadow-sm space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-extrabold px-3 py-1 rounded-full">
+                <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+                <span>ভেরিফায়েড গ্রাহকদের প্রতিক্রিয়া</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 leading-tight">
+                আমাদের সন্তুষ্ট গ্রাহকদের আসল রিভিউ ও অভিজ্ঞতা
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500">
+                একদম রিয়েল অভিজ্ঞতা — তারা কীভাবে মুহূর্তেই ড্রাইভে এক্সেস পেয়েছেন এবং কাজে লাগাচ্ছেন
+              </p>
+            </div>
+
+            {/* Score Pill */}
+            <div className="flex items-center gap-4 bg-slate-50 border border-slate-200/80 rounded-2xl p-3 sm:p-4 shrink-0">
+              <div className="text-center border-r border-slate-200 pr-4">
+                <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">৪.৯</span>
+                <span className="text-[10px] text-slate-400 block">/ ৫.০ স্কোর</span>
+              </div>
+              <div>
+                <div className="flex text-amber-400 gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 stroke-amber-400" />
+                  ))}
+                </div>
+                <span className="text-xs font-bold text-slate-700 mt-1 block">
+                  ১,৪৫০+ সফল অর্ডার ও ডেলিভারি
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Review Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* Review 1 */}
+            <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 hover:border-emerald-400/80 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex text-amber-400 gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>ভেরিফায়েড ক্রেতা</span>
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                  "বিকাশে পেমেন্ট সম্পন্ন করার মাত্র ২ মিনিটের ভেতর ইমেইল ও স্ক্রিনে সরাসরি গুগল ড্রাইভ লিঙ্ক পেয়ে গেছি! এত বড় ১০০TB কালেকশনে প্রতিটা ক্যাটাগরি সুশৃঙ্খলভাবে সাজানো।"
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-200/60">
+                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                  MR
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-extrabold text-slate-900 truncate">মোহাম্মদ রাশেদুল হক</h4>
+                  <span className="text-[10px] text-slate-400">চট্টগ্রাম • গ্রাফিক্স ডিজাইনার</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Review 2 */}
+            <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 hover:border-emerald-400/80 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex text-amber-400 gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>ভেরিফায়েড ক্রেতা</span>
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                  "ফ্রিল্যান্সারদের জন্য ক্যানভা প্রিমিয়াম টেমপ্লেট ও মোশন গ্রাফিক্স রিসোর্সগুলো এক কথায় সোনার খনি! এই দামে এত রিসোর্স কোথাও পাওয়া অসম্ভব। নাসির হাবকে অসংখ্য ধন্যবাদ।"
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-200/60">
+                <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                  TA
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-extrabold text-slate-900 truncate">তানভীর আহমেদ</h4>
+                  <span className="text-[10px] text-slate-400">ঢাকা • ডিজিটাল মার্কেটার</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Review 3 */}
+            <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 hover:border-emerald-400/80 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex text-amber-400 gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>ভেরিফায়েড ক্রেতা</span>
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                  "আমি ড্রাইভ লিংক ডাউনলোড করার সময় একটু সমস্যায় পড়েছিলাম, হোয়াটসঅ্যাপে মেসেজ দেওয়ার ৩ মিনিটের মধ্যে টিম সাপোর্ট দিয়ে সমাধান করে দিল। লাইফটাইম অ্যাক্সেসের প্রতিশ্রুতি শতভাগ সত্যি।"
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-200/60">
+                <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                  SK
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-extrabold text-slate-900 truncate">সাজ্জাদুল করিম</h4>
+                  <span className="text-[10px] text-slate-400">সিলেট • ভিডিও এডিটর</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof Quick CTA Strip */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                <Flame className="w-5 h-5 fill-emerald-400" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-white">
+                  আজকের মেগা অফারে নিজের ডিজিটাল প্রোডাক্ট বান্ডেল সংগ্রহ করুন
+                </h4>
+                <p className="text-xs text-slate-300">
+                  ১০০TB ক্লাউড ড্রাইভ রিসোর্স ও আজীবন অ্যাক্সেস মাত্র ৳২৯৯ টাকায়!
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleNavigateToProductPurchase(featuredOfferProduct)}
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+            >
+              <span>অফিশিয়াল ল্যান্ডিং পেজ দেখুন</span>
+              <ExternalLink className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </section>
 

@@ -14,5 +14,10 @@ export const scrollToElement = (elementId: string) => {
   const element = document.getElementById(cleanId);
   if (element) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.classList.add('ring-4', 'ring-emerald-500', 'ring-offset-4', 'transition-all', 'duration-500');
+    setTimeout(() => {
+      element.classList.remove('ring-4', 'ring-emerald-500', 'ring-offset-4');
+    }, 2500);
   }
 };
+

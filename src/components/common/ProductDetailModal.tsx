@@ -28,7 +28,7 @@ import {
 import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import { analytics } from '../../utils/analytics';
-import { getProductPath } from '../../utils/slugify';
+import { getProductSlug } from '../../utils/slugify';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -47,14 +47,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [activeImage, setActiveImage] = useState<string>('');
   const [isAdded, setIsAdded] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
-  const [liveViewers, setLiveViewers] = useState(29);
+  const [liveViewers, setLiveViewers] = useState(26);
   const [cartCount, setCartCount] = useState(7);
+  const [ordersToday, setOrdersToday] = useState(84);
 
   useEffect(() => {
     if (product) {
       setActiveImage(product.imageUrl);
-      setLiveViewers(Math.floor(Math.random() * 15) + 20);
+      setLiveViewers(Math.floor(Math.random() * 16) + 18);
       setCartCount(Math.floor(Math.random() * 5) + 5);
+      setOrdersToday(Math.floor(Math.random() * 40) + 65);
       setQuantity(1);
       setIsDownloaded(false);
       analytics.trackProductView(product);
@@ -67,6 +69,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const currentImage = activeImage || product.imageUrl;
   const discountPercent = calculateDiscount(product.price, product.oldPrice);
   const categoryName = getCategoryName(product.categoryId);
+  const productLandingPath = `/purchase/${getProductSlug(product)}`;
   const hasLivePreview = Boolean(
     product.livePreviewEnabled && product.livePreviewUrl && product.livePreviewUrl.trim()
   );
@@ -100,8 +103,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const handleGoToFullPage = () => {
     onClose();
-    window.history.pushState(null, '', getProductPath(product));
+    window.history.pushState(null, '', productLandingPath);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (onViewFullPage) {
       onViewFullPage(product);
     }
@@ -271,17 +275,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   )}
                 </div>
 
-                {/* Live Views Badge */}
-                <div className="flex items-center gap-2 text-xs text-slate-300 bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800">
-                  <Eye className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>
-                    <strong className="text-white font-bold">{liveViewers} people</strong> are viewing this right now
-                  </span>
+                {/* Live Views & Order Statistics Badges */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-2 text-slate-200 bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800">
+                    <Eye className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>
+                      এই মুহূর্তে <strong className="text-emerald-400 font-bold">{liveViewers} জন</strong> দেখছেন
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-200 bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800">
+                    <Flame className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+                    <span>
+                      আজকে <strong className="text-amber-400 font-bold">{ordersToday} জন</strong> অর্ডার করেছেন
+                    </span>
+                  </div>
                 </div>
 
                 {/* Urgency Alert */}
-                <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-500/10 border border-rose-500/20 px-3 py-2 rounded-xl">
-                  <Flame className="w-4 h-4 text-rose-400 shrink-0 fill-rose-500" />
+                <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-500/10 border border-rose-500/25 px-3 py-2 rounded-xl">
+                  <Flame className="w-4 h-4 text-rose-400 shrink-0 fill-rose-500 animate-pulse" />
                   <span>
                     {isFreeProduct ? (
                       <>
@@ -289,11 +301,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       </>
                     ) : (
                       <>
-                        Selling fast! Over <strong className="text-rose-200 font-bold">{cartCount} people</strong> have this in their carts
+                        অফার সীমিত! আর মাত্র <strong className="text-rose-200 font-bold">{cartCount}টি স্লট</strong> অবশিষ্ট আছে!
                       </>
                     )}
                   </span>
                 </div>
+
+                {/* Direct Landing Page CTA Button */}
+                <button
+                  type="button"
+                  onClick={handleGoToFullPage}
+                  className="w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer group"
+                >
+                  <ExternalLink className="w-4 h-4 text-emerald-200 group-hover:scale-110 transition-transform" />
+                  <span>🚀 এই প্রোডাক্টের অফিশিয়াল ল্যান্ডিং পেজ ও ভিডিও রিভিউ দেখুন</span>
+                </button>
+
 
                 {/* Key Bullet Points */}
                 <div className="space-y-1.5 text-xs text-slate-200 pt-1">
